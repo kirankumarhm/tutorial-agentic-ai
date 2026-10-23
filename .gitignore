@@ -1,0 +1,35 @@
+# Environment & Sensitive files
+.env
+.env.*
+*.env
+*.key
+*.pem
+
+# Python & Virtual Environments
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+build/
+dist/
+wheels/
+*.egg-info/
+.venv/
+venv/
+ENV/
+
+# Jupyter Notebook Checkpoints
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/
+*/*/.ipynb_checkpoints/
+
+# Archive files & raw material
+*.zip
+agentic-ai-crash-course/
+agentic-ai-crash-course.zip
+
+# Editor & OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
