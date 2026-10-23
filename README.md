@@ -18,7 +18,8 @@ tutorial-agentic-ai/
 │   ├── blood_work_analysis.ipynb  # Interactive biomarker extraction & diet prompt engineering
 │   ├── blood_work.txt             # Realistic sample lab report (CBC, Lipids, Metabolic Panel)
 │   └── streamlit_app/
-│       └── app.py                 # Full glassmorphic, model-agnostic Streamlit application
+│       ├── app.py                 # Full glassmorphic, model-agnostic Streamlit application
+│       └── AI Blood Work & Diet Analyzer.png # Application UI Screenshot
 │
 ├── .gitignore                     # Security filter (strictly excludes .env and secret keys)
 ├── pyproject.toml                 # Project dependencies and configuration
@@ -203,6 +204,10 @@ Demonstrates foundational patterns for initializing and calling Large Language M
 
 ### 2️⃣ `2_health_analysis/`
 An end-to-end clinical biomarker analysis and tailored functional nutrition engine.
+
+<p align="center">
+  <img src="2_health_analysis/streamlit_app/AI%20Blood%20Work%20%26%20Diet%20Analyzer.png" alt="AI Blood Work & Diet Analyzer" width="900" style="border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.3);" />
+</p>
 
 #### **Key Features of the Streamlit App (`streamlit_app/app.py`)**:
 * **⚡ Model & Provider-Agnostic**:
