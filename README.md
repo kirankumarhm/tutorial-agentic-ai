@@ -1,6 +1,9 @@
 # 🚀 Tutorial: Agentic AI & Clinical Health Analysis
 
-A hands-on, modular tutorial series on building Agentic AI applications and production-ready LLM interfaces using **LangChain** and **Streamlit**.
+A hands-on, modular implementation and practical session based on the tutorial:
+📺 **[Watch the Video Tutorial on YouTube](https://www.youtube.com/watch?v=D74el9mvNak&t=1442s)**
+
+This repository covers hands-on implementations for building Agentic AI workflows and production-grade LLM applications using **LangChain** and **Streamlit**.
 
 ---
 
@@ -94,6 +97,12 @@ streamlit run 2_health_analysis/streamlit_app/app.py
 2. In the sidebar, select your preferred provider (e.g. **Google Gemini**, **OpenAI**, or **Groq**) and paste your API key.
 3. Click **"📋 Load Sample Blood Report"** to load the provided clinical lab test panel.
 4. Click **"🚀 Analyze Biomarkers"** to view the interactive triage and diet strategy.
+
+---
+
+## 📺 Video Reference
+This repository contains the practical session code from the tutorial video:
+- **YouTube Link**: [Agentic AI Practical Tutorial](https://www.youtube.com/watch?v=D74el9mvNak&t=1442s)
 
 ---
 
