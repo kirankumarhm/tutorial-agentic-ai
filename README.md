@@ -27,6 +27,175 @@ tutorial-agentic-ai/
 
 ---
 
+## 💻 Prerequisites & OS Installation Guide
+
+Before getting started, make sure you have **Git** and **Python 3.10+** (recommended: Python 3.11, 3.12, or 3.13) installed on your system.
+
+### 1. Installing Prerequisites by Operating System
+
+#### 🪟 Windows
+
+1. **Using Winget (Fastest & Recommended)**:
+   Open **PowerShell** as Administrator and run:
+   ```powershell
+   # Install Git
+   winget install --id Git.Git -e --source winget
+
+   # Install Python (3.12 or 3.13)
+   winget install --id Python.Python.3.12 -e --source winget
+   ```
+2. **Using Direct Installers**:
+   - Download Git from [git-scm.com/download/win](https://git-scm.com/download/win).
+   - Download Python from [python.org/downloads](https://www.python.org/downloads/).
+   - ⚠️ **Important**: During Python installation, make sure to check the box: **"Add python.exe to PATH"**.
+
+---
+
+#### 🍎 macOS
+
+1. **Install Homebrew** (if not already installed):
+   ```bash
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+   ```
+2. **Install Git & Python via Homebrew**:
+   ```bash
+   brew update
+   brew install git python@3.12
+   ```
+3. *(Alternative)*: Install Apple's Command Line Developer Tools:
+   ```bash
+   xcode-select --install
+   ```
+
+---
+
+#### 🐧 Linux
+
+##### **Ubuntu / Debian / Linux Mint**:
+```bash
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y git python3 python3-pip python3-venv python3-dev build-essential
+```
+
+##### **Fedora / RHEL / CentOS**:
+```bash
+sudo dnf check-update
+sudo dnf install -y git python3 python3-pip python3-devel
+```
+
+##### **Arch Linux / Manjaro**:
+```bash
+sudo pacman -Syu --noconfirm git python python-pip
+```
+
+---
+
+### 2. Optional: Local Inference with Ollama (For Offline LLMs)
+If you wish to run open-weights models (such as `llama3.2`, `mistral`, `deepseek-r1`) offline and locally without paying for API keys:
+- **Windows**: Download from [ollama.com/download/windows](https://ollama.com/download/windows) or run `winget install Ollama.Ollama`.
+- **macOS**: `brew install ollama` or download from [ollama.com/download/mac](https://ollama.com/download/mac).
+- **Linux**: Run `curl -fsSL https://ollama.com/install.sh | sh`.
+
+After installing, pull a model:
+```bash
+ollama run llama3.2
+```
+
+---
+
+## 📦 Required Python Packages
+
+The core dependencies powering this project:
+
+| Package | Version | Purpose |
+| :--- | :--- | :--- |
+| **`streamlit`** | `^1.40.0` | Powers the reactive, glassmorphic interactive web dashboard |
+| **`langchain`** | `^1.4.0` | Orchestrates LLM chains, prompts, and output pipelines |
+| **`langchain-core`** | `^1.0.0` | Core abstractions, messages, and interfaces |
+| **`langchain-google-genai`** | `^2.0.0` | Driver for Google Gemini (`gemini-3.8-flash`, etc.) |
+| **`langchain-openai`** | `^0.3.0` | Driver for OpenAI, OpenRouter, and local Ollama endpoints |
+| **`langchain-groq`** | `^0.2.0` | Ultra-low latency LPU inference with Groq |
+| **`python-dotenv`** | `^1.0.0` | Environment variable utilities |
+| **`requests`** | `^2.31.0` | HTTP requests and API model auto-detection |
+| **`notebook` / `ipykernel`** | `^7.0.0` | Interactive Jupyter notebook execution for experiments |
+
+---
+
+## 🛠️ Step-by-Step Setup & Virtual Environment
+
+### Step 1: Clone the Repository
+```bash
+git clone https://github.com/kirankumarhm/tutorial-agentic-ai.git
+cd tutorial-agentic-ai
+```
+
+### Step 2: Create and Activate a Virtual Environment
+
+#### On Windows (PowerShell):
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+*(If you encounter an execution policy restriction in PowerShell, run `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser` once).*
+
+#### On Windows (Command Prompt `cmd`):
+```cmd
+python -m venv .venv
+.\.venv\Scripts\activate.bat
+```
+
+#### On macOS / Linux (Terminal):
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+---
+
+### Step 3: Install Packages
+
+#### Method A: Standard Installation via `pip`
+```bash
+pip install --upgrade pip
+pip install -r 2_health_analysis/requirements.txt  # or install directly:
+pip install streamlit langchain langchain-core langchain-google-genai langchain-openai langchain-groq python-dotenv requests ipykernel notebook
+```
+
+#### Method B: Ultra-Fast Installation using `uv` (Recommended)
+If you have [uv](https://github.com/astral-sh/uv) installed:
+```bash
+# Windows
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+# macOS/Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Sync dependencies instantly:
+uv venv
+uv pip install -e .
+```
+
+---
+
+## 🚀 Running the Applications
+
+### 1. Launch the Streamlit Health Analyzer App
+Make sure your virtual environment is active:
+```bash
+streamlit run 2_health_analysis/streamlit_app/app.py
+```
+Your browser will open automatically to `http://localhost:8501`.
+
+### 2. Launch the Jupyter Notebooks
+To explore the step-by-step tutorial notebooks:
+```bash
+jupyter notebook
+```
+- Open `1_simple_calling_llm/call_llm.ipynb` to explore foundational LLM calling.
+- Open `2_health_analysis/blood_work_analysis.ipynb` to explore clinical extraction logic.
+
+---
+
 ## 🌟 Modules Overview
 
 ### 1️⃣ `1_simple_calling_llm/`
@@ -44,7 +213,7 @@ An end-to-end clinical biomarker analysis and tailored functional nutrition engi
   - **Ollama (Local)**: Private, offline open-source models (`llama3.2`, `deepseek-r1`, `mistral`)
   - **Custom OpenAI-Compatible**: Connect to vLLM, LM Studio, or Together AI
 * **🔒 Privacy & In-Memory Key Security**:
-  - Does **not** read or store keys from `.env`.
+  - Does **not** read or expose keys from `.env`.
   - Keys are entered directly in the UI per session and kept strictly in memory.
   - Strict pre-execution validation prevents unauthenticated API calls.
 * **🔬 Automated Biomarker Triage**:
@@ -57,38 +226,6 @@ An end-to-end clinical biomarker analysis and tailored functional nutrition engi
   - Generates targeted questions for patients to discuss with their primary care doctor.
 * **🎨 Glassmorphic Interface**:
   - Deep obsidian dark canvas with ambient aurora glow, frosted translucent glass containers (`backdrop-filter: blur(20px)`), and responsive layout.
-
----
-
-## 🛠️ Quickstart & Setup
-
-### 1. Clone the Repository
-```bash
-git clone https://github.com/kirankumarhm/tutorial-agentic-ai.git
-cd tutorial-agentic-ai
-```
-
-### 2. Create and Activate Virtual Environment
-```bash
-# Windows
-python -m venv .venv
-.\.venv\Scripts\activate
-
-# macOS / Linux
-python3 -m venv .venv
-source .venv/bin/activate
-```
-
-### 3. Install Dependencies
-```bash
-pip install langchain langchain-core langchain-google-genai langchain-openai langchain-groq streamlit python-dotenv
-```
-*(Or install via `uv` or `pip install -e .` using the provided `pyproject.toml`)*
-
-### 4. Launch the Streamlit Application
-```bash
-streamlit run 2_health_analysis/streamlit_app/app.py
-```
 
 ---
 
