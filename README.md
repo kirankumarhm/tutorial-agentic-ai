@@ -12,27 +12,47 @@ This repository covers hands-on implementations for building Agentic AI workflow
 ```text
 tutorial-agentic-ai/
 ├── 1_simple_calling_llm/
-│   └── call_llm.ipynb            # Foundational LLM calling patterns across providers
+│   └── call_llm.ipynb                 # Foundational LLM calling patterns across providers
 │
 ├── 2_health_analysis/
-│   ├── blood_work_analysis.ipynb  # Interactive biomarker extraction & diet prompt engineering
-│   ├── blood_work.txt             # Realistic sample lab report (CBC, Lipids, Metabolic Panel)
+│   ├── blood_work_analysis.ipynb       # Interactive biomarker extraction & diet prompt engineering
+│   ├── blood_work.txt                  # Realistic sample lab report (CBC, Lipids, Metabolic Panel)
 │   └── streamlit_app/
-│       ├── app.py                 # Full glassmorphic, model-agnostic Streamlit application
+│       ├── app.py                      # Full glassmorphic, model-agnostic Streamlit application
 │       └── AI Blood Work & Diet Analyzer.png # Application UI Screenshot
 │
-├── .gitignore                     # Security filter (strictly excludes .env and secret keys)
-├── pyproject.toml                 # Project dependencies and configuration
+├── 3_vector_db/
+│   └── chroma_vector_db_basics.ipynb  # Vector embeddings, indexing, and Chroma similarity search
+│
+├── 4_rag_basics/
+│   ├── basic_rag.ipynb                # End-to-end Retrieval-Augmented Generation (RAG) pipeline
+│   └── telecom_guide.pdf              # Document for chunking, embedding & vector retrieval
+│
+├── .gitignore                          # Security filter (strictly excludes .env and secret keys)
+├── pyproject.toml                      # Project dependencies managed via uv
+├── requirements.txt                    # Pinned pip requirements
 └── README.md
 ```
 
 ---
 
-## 💻 Prerequisites & OS Installation Guide
+## 💻 Prerequisites & Required Software
 
-Before getting started, make sure you have **Git** and **Python 3.10+** (recommended: Python 3.11, 3.12, or 3.13) installed on your system.
+Before getting started, make sure you have the required software installed on your machine:
 
-### 1. Installing Prerequisites by Operating System
+| Software | Required Version | Purpose | Link |
+| :--- | :--- | :--- | :--- |
+| **Python** | `3.10+` (tested on `3.12` & `3.13`) | Core programming language runtime | [python.org](https://www.python.org/downloads/) |
+| **Git** | Any modern version | Source code and version control | [git-scm.com](https://git-scm.com/) |
+| **uv** *(Recommended)* | `0.10+` | Ultra-fast Python package and project manager | [astral.sh/uv](https://github.com/astral-sh/uv) |
+| **Web Browser** | Latest Chrome, Edge, or Firefox | To interact with Streamlit apps and Jupyter Notebook | [google.com/chrome](https://www.google.com/chrome/) |
+| **VS Code / Cursor** *(Optional)* | Latest | Recommended IDE with Python & Jupyter extensions | [code.visualstudio.com](https://code.visualstudio.com/) |
+| **C++ Build Tools** *(Windows)* | Visual Studio 2022 Build Tools | Required for compiling native extensions (ChromaDB, hnswlib) | [visualstudio.microsoft.com](https://visualstudio.microsoft.com/visual-cpp-build-tools/) |
+| **Ollama** *(Optional)* | Latest | Running local offline LLMs (`llama3.2`, `deepseek-r1`) | [ollama.com](https://ollama.com/) |
+
+---
+
+### 1. Installing Required Software by Operating System
 
 #### 🪟 Windows
 
@@ -44,11 +64,15 @@ Before getting started, make sure you have **Git** and **Python 3.10+** (recomme
 
    # Install Python (3.12 or 3.13)
    winget install --id Python.Python.3.12 -e --source winget
+
+   # Install uv (Fast package manager)
+   powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
    ```
 2. **Using Direct Installers**:
    - Download Git from [git-scm.com/download/win](https://git-scm.com/download/win).
    - Download Python from [python.org/downloads](https://www.python.org/downloads/).
    - ⚠️ **Important**: During Python installation, make sure to check the box: **"Add python.exe to PATH"**.
+   - If compiling vector libraries from source, install the [C++ Build Tools](https://aka.ms/vs/17/release/vs_BuildTools.exe) with "Desktop development with C++" workload.
 
 ---
 
@@ -58,10 +82,10 @@ Before getting started, make sure you have **Git** and **Python 3.10+** (recomme
    ```bash
    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
    ```
-2. **Install Git & Python via Homebrew**:
+2. **Install Git, Python & uv via Homebrew**:
    ```bash
    brew update
-   brew install git python@3.12
+   brew install git python@3.12 uv
    ```
 3. *(Alternative)*: Install Apple's Command Line Developer Tools:
    ```bash
@@ -76,17 +100,20 @@ Before getting started, make sure you have **Git** and **Python 3.10+** (recomme
 ```bash
 sudo apt update && sudo apt upgrade -y
 sudo apt install -y git python3 python3-pip python3-venv python3-dev build-essential
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
 ##### **Fedora / RHEL / CentOS**:
 ```bash
 sudo dnf check-update
-sudo dnf install -y git python3 python3-pip python3-devel
+sudo dnf install -y git python3 python3-pip python3-devel gcc gcc-c++
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
 ##### **Arch Linux / Manjaro**:
 ```bash
-sudo pacman -Syu --noconfirm git python python-pip
+sudo pacman -Syu --noconfirm git python python-pip base-devel
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
 ---
@@ -106,19 +133,32 @@ ollama run llama3.2
 
 ## 📦 Required Python Packages
 
-The core dependencies powering this project:
+All dependencies are defined in [`pyproject.toml`](./pyproject.toml) and [`requirements.txt`](./requirements.txt):
 
-| Package | Version | Purpose |
-| :--- | :--- | :--- |
-| **`streamlit`** | `^1.40.0` | Powers the reactive, glassmorphic interactive web dashboard |
-| **`langchain`** | `^1.4.0` | Orchestrates LLM chains, prompts, and output pipelines |
-| **`langchain-core`** | `^1.0.0` | Core abstractions, messages, and interfaces |
-| **`langchain-google-genai`** | `^2.0.0` | Driver for Google Gemini (`gemini-3.8-flash`, etc.) |
-| **`langchain-openai`** | `^0.3.0` | Driver for OpenAI, OpenRouter, and local Ollama endpoints |
-| **`langchain-groq`** | `^0.2.0` | Ultra-low latency LPU inference with Groq |
-| **`python-dotenv`** | `^1.0.0` | Environment variable utilities |
-| **`requests`** | `^2.31.0` | HTTP requests and API model auto-detection |
-| **`notebook` / `ipykernel`** | `^7.0.0` | Interactive Jupyter notebook execution for experiments |
+| Category | Package | Version | Purpose |
+| :--- | :--- | :--- | :--- |
+| **Core Framework** | **`langchain`** | `^1.4.7` | High-level orchestration for LLM chains and prompts |
+| | **`langchain-core`** | `^1.0.0` | Fundamental abstractions, message schemas, and runnables |
+| | **`langchain-community`** | `^0.4.1` | Third-party integrations, document loaders, and tools |
+| **Model Drivers** | **`langchain-google-genai`**| `^4.2.2` | Google Gemini models (`gemini-2.5`, `gemini-3.8-flash`) |
+| | **`langchain-openai`** | `^1.4.7` | OpenAI (`gpt-4o`, `o3-mini`), OpenRouter, and Ollama |
+| | **`langchain-groq`** | `^1.1.3` | Ultra-low latency LPU inference with Groq |
+| **Vector DB & Embeddings** | **`chromadb`** | `^1.5.9` | High-performance embedded local vector database |
+| | **`langchain-chroma`** | `^1.1.0` | LangChain vector store integration for Chroma |
+| | **`sentence-transformers`** | `^6.2.0` | Fast open-source embeddings (e.g., `all-MiniLM-L6-v2`) |
+| | **`langchain-huggingface`** | `^1.2.2` | LangChain wrapper for Hugging Face embeddings |
+| | **`torchvision`** | `^0.27.0` | PyTorch backend for tensor computation |
+| **RAG & Document Tools** | **`langchain-text-splitters`**| `^1.1.2` | Text chunking (`RecursiveCharacterTextSplitter`) |
+| | **`pypdf`** | `^6.11.0` | PDF document extraction and page reading |
+| | **`fpdf2`** | `^2.8.7` | Programmatic PDF report generation |
+| | **`pandas`** | `^3.0.2` | Tabular data analysis and biomarker dataframes |
+| | **`pillow`** | `^12.2.0` | Image processing and visual asset handling |
+| **Interactive UI & Web** | **`streamlit`** | `^1.57.0` | Powers the reactive, glassmorphic web dashboard |
+| **Notebooks & Widgets** | **`notebook`** | `^7.5.6` | Modern web-based interactive computational notebooks |
+| | **`ipykernel`** | `^7.2.0` | Jupyter Python execution kernel |
+| | **`ipywidgets`** | `^8.1.9` | Rich notebook interactive widgets & download progress bars |
+| **Utilities** | **`python-dotenv`** | `^1.2.2` | Securely loads configuration and environment variables |
+| | **`requests`** | `^2.31.0` | HTTP requests and API model auto-detection |
 
 ---
 
@@ -155,25 +195,17 @@ source .venv/bin/activate
 
 ### Step 3: Install Packages
 
-#### Method A: Standard Installation via `pip`
-```bash
-pip install --upgrade pip
-pip install -r 2_health_analysis/requirements.txt  # or install directly:
-pip install streamlit langchain langchain-core langchain-google-genai langchain-openai langchain-groq python-dotenv requests ipykernel notebook
-```
-
-#### Method B: Ultra-Fast Installation using `uv` (Recommended)
+#### Method A: Ultra-Fast Installation using `uv` (Recommended)
 If you have [uv](https://github.com/astral-sh/uv) installed:
 ```bash
-# Windows
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+# Sync all project dependencies directly from pyproject.toml:
+uv sync
+```
 
-# macOS/Linux
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# Sync dependencies instantly:
-uv venv
-uv pip install -e .
+#### Method B: Standard Installation via `pip`
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt
 ```
 
 ---
@@ -190,10 +222,12 @@ Your browser will open automatically to `http://localhost:8501`.
 ### 2. Launch the Jupyter Notebooks
 To explore the step-by-step tutorial notebooks:
 ```bash
-jupyter notebook
+python -m notebook
 ```
-- Open `1_simple_calling_llm/call_llm.ipynb` to explore foundational LLM calling.
-- Open `2_health_analysis/blood_work_analysis.ipynb` to explore clinical extraction logic.
+- Open `1_simple_calling_llm/call_llm.ipynb` to explore foundational LLM calling patterns.
+- Open `2_health_analysis/blood_work_analysis.ipynb` to explore clinical biomarker extraction.
+- Open `3_vector_db/chroma_vector_db_basics.ipynb` to explore vector database indexing and semantic search.
+- Open `4_rag_basics/basic_rag.ipynb` to explore document chunking, retrieval, and RAG pipelines.
 
 ---
 
@@ -231,6 +265,18 @@ An end-to-end clinical biomarker analysis and tailored functional nutrition engi
   - Generates targeted questions for patients to discuss with their primary care doctor.
 * **🎨 Glassmorphic Interface**:
   - Deep obsidian dark canvas with ambient aurora glow, frosted translucent glass containers (`backdrop-filter: blur(20px)`), and responsive layout.
+
+### 3️⃣ `3_vector_db/`
+Explores semantic search, embeddings, and vector store operations using **ChromaDB**:
+- Creating dense vector representations with `sentence-transformers` (`all-MiniLM-L6-v2`) and HuggingFace.
+- Indexing document embeddings into in-memory and persistent Chroma vector collections.
+- Executing similarity search queries (`k-nearest neighbors`) with distance metrics.
+
+### 4️⃣ `4_rag_basics/`
+Hands-on implementation of **Retrieval-Augmented Generation (RAG)**:
+- Loading unstructured documents (PDFs using `pypdf`).
+- Chunking strategies using `RecursiveCharacterTextSplitter` with customizable `chunk_size` and `chunk_overlap`.
+- Integrating document retrievers with LangChain prompt templates and LLMs to answer domain-specific questions grounded in source data.
 
 ---
 
