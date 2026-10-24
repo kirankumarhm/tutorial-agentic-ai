@@ -33,3 +33,10 @@ agentic-ai-crash-course.zip
 .idea/
 .DS_Store
 Thumbs.db
+scratch/
+
+# Maven & Java
+target/
+*.class
+*.jar
+*.war

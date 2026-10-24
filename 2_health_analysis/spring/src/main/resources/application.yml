@@ -1,0 +1,27 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: health-analysis-spring
+  ai:
+    openai:
+      # ==============================================================
+      # OPTION A: Google Gemini (Active by default with GOOGLE_API_KEY)
+      # ==============================================================
+      api-key: ${AI_API_KEY:${GOOGLE_API_KEY:${OPENAI_API_KEY:demo-key}}}
+      base-url: ${AI_BASE_URL:${GOOGLE_BASE_URL:https://generativelanguage.googleapis.com/v1beta/openai}}
+      chat:
+        options:
+          model: ${AI_MODEL:gemini-3.8-flash}
+          temperature: 0.0
+
+      # ==============================================================
+      # OPTION B: Official OpenAI (Uncomment below to switch to OpenAI)
+      # ==============================================================
+      # api-key: ${OPENAI_API_KEY}
+      # base-url: ${OPENAI_BASE_URL:https://api.openai.com}
+      # chat:
+      #   options:
+      #     model: ${OPENAI_MODEL:gpt-4o-mini}
+      #     temperature: 0.0

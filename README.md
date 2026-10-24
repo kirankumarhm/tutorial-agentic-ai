@@ -3,33 +3,62 @@
 A hands-on, modular implementation and practical session based on the tutorial:
 📺 **[Watch the Video Tutorial on YouTube](https://www.youtube.com/watch?v=D74el9mvNak&t=1442s)**
 
-This repository covers hands-on implementations for building Agentic AI workflows and production-grade LLM applications using **LangChain** and **Streamlit**.
+This repository covers hands-on implementations for building Agentic AI workflows, multimodal vision triage, conversational memory, and production-grade LLM applications using **Python (LangChain / LangGraph / Streamlit)** and **Enterprise Java (Spring Boot 3.4.1 & Spring AI 1.0.0-M6 on Java 21 LTS)**.
 
 ---
 
-## 📁 Repository Structure
+## 📁 Repository Structure (Polyglot: Python & Spring Edition)
 
 ```text
 tutorial-agentic-ai/
 ├── 1_simple_calling_llm/
-│   └── call_llm.ipynb                 # Foundational LLM calling patterns across providers
+│   ├── call_llm.ipynb                 # [Python] Foundational LLM calling patterns across providers
+│   └── spring/                        # [Spring] Spring Boot 3.4 & Spring AI (Port 8081)
+│       ├── pom.xml
+│       └── src/main/java/com/tutorial/llm/
 │
 ├── 2_health_analysis/
-│   ├── blood_work_analysis.ipynb       # Interactive biomarker extraction & diet prompt engineering
+│   ├── blood_work_analysis.ipynb       # [Python] Interactive biomarker extraction & diet prompt engineering
 │   ├── blood_work.txt                  # Realistic sample lab report (CBC, Lipids, Metabolic Panel)
-│   └── streamlit_app/
-│       ├── app.py                      # Full glassmorphic, model-agnostic Streamlit application
-│       └── AI Blood Work & Diet Analyzer.png # Application UI Screenshot
+│   ├── streamlit_app/                  # [Python] Glassmorphic Streamlit application
+│   └── spring/                        # [Spring] Two-Stage Clinical Pipeline & REST API (Port 8082)
+│       ├── pom.xml
+│       └── src/main/java/com/tutorial/health/
 │
 ├── 3_vector_db/
-│   └── chroma_vector_db_basics.ipynb  # Vector embeddings, indexing, and Chroma similarity search
+│   ├── chroma_vector_db_basics.ipynb  # [Python] Vector embeddings, indexing, and Chroma similarity search
+│   └── spring/                        # [Spring] VectorStore & Semantic Search API (Port 8083)
+│       ├── pom.xml
+│       └── src/main/java/com/tutorial/vectordb/
 │
 ├── 4_rag_basics/
-│   ├── basic_rag.ipynb                # End-to-end Retrieval-Augmented Generation (RAG) pipeline
-│   └── telecom_guide.pdf              # Document for chunking, embedding & vector retrieval
+│   ├── basic_rag.ipynb                # [Python] End-to-end Retrieval-Augmented Generation (RAG) pipeline
+│   ├── telecom_guide.pdf              # Document for chunking, embedding & vector retrieval
+│   └── spring/                        # [Spring] PDF Reader, TokenSplitter & RAG REST API (Port 8084)
+│       ├── pom.xml
+│       └── src/main/java/com/tutorial/rag/
 │
-├── .gitignore                          # Security filter (strictly excludes .env and secret keys)
-├── pyproject.toml                      # Project dependencies managed via uv
+├── 5_single_agent/
+│   ├── single_agent.ipynb             # [Python] ReAct agent loop, tool definition (@tool), dynamic routing
+│   └── spring/                        # [Spring] Spring AI Tool Calling & REST API (Port 8085)
+│       ├── pom.xml
+│       └── src/main/java/com/tutorial/agent/
+│
+├── 6_memory/
+│   ├── single_agent_with_memory.ipynb # [Python] Conversational agent with InMemorySaver & thread_id state
+│   └── spring/                        # [Spring] ChatMemory & MessageChatMemoryAdvisor (Port 8086)
+│       ├── pom.xml
+│       └── src/main/java/com/tutorial/memory/
+│
+├── 7_multi_model_agent/
+│   ├── multi_model_agent.ipynb        # [Python] Multimodal vision agent analyzing blood_work.png + tool calling
+│   ├── blood_work.png                 # Clinical lab report image (biomarker table)
+│   └── spring/                        # [Spring] Multimodal ChatClient + DietTools & Upload API (Port 8087)
+│       ├── pom.xml
+│       └── src/main/java/com/tutorial/multimodal/
+│
+├── pom.xml                            # Root Maven Parent & Multi-Module Aggregator (Modules 1-7)
+├── pyproject.toml                      # Python dependencies managed via uv
 ├── requirements.txt                    # Pinned pip requirements
 └── README.md
 ```
@@ -43,248 +72,260 @@ Before getting started, make sure you have the required software installed on yo
 | Software | Required Version | Purpose | Link |
 | :--- | :--- | :--- | :--- |
 | **Python** | `3.10+` (tested on `3.12` & `3.13`) | Core programming language runtime | [python.org](https://www.python.org/downloads/) |
+| **Java JDK** | `21 LTS` | Runtime for Spring Boot 3.4 & Spring AI | [adoptium.net](https://adoptium.net/) |
+| **Apache Maven** | `3.9+` | Build & dependency manager for Spring | [maven.apache.org](https://maven.apache.org/) |
 | **Git** | Any modern version | Source code and version control | [git-scm.com](https://git-scm.com/) |
 | **uv** *(Recommended)* | `0.10+` | Ultra-fast Python package and project manager | [astral.sh/uv](https://github.com/astral-sh/uv) |
-| **Web Browser** | Latest Chrome, Edge, or Firefox | To interact with Streamlit apps and Jupyter Notebook | [google.com/chrome](https://www.google.com/chrome/) |
-| **VS Code / Cursor** *(Optional)* | Latest | Recommended IDE with Python & Jupyter extensions | [code.visualstudio.com](https://code.visualstudio.com/) |
-| **C++ Build Tools** *(Windows)* | Visual Studio 2022 Build Tools | Required for compiling native extensions (ChromaDB, hnswlib) | [visualstudio.microsoft.com](https://visualstudio.microsoft.com/visual-cpp-build-tools/) |
-| **Ollama** *(Optional)* | Latest | Running local offline LLMs (`llama3.2`, `deepseek-r1`) | [ollama.com](https://ollama.com/) |
+| **Web Browser** | Latest Chrome, Edge, or Firefox | To interact with Streamlit apps and Jupyter | [google.com/chrome](https://www.google.com/chrome/) |
+| **VS Code / Cursor** | Latest | Recommended IDE with Python & Java extensions | [code.visualstudio.com](https://code.visualstudio.com/) |
 
 ---
 
-### 1. Installing Required Software by Operating System
+## 🔑 Environment Configuration
 
-#### 🪟 Windows
+Create a `.env` file in the repository root or set system environment variables:
 
-1. **Using Winget (Fastest & Recommended)**:
-   Open **PowerShell** as Administrator and run:
-   ```powershell
-   # Install Git
-   winget install --id Git.Git -e --source winget
+```ini
+# Google Gemini API Key (Active by default across Python & Spring)
+GOOGLE_API_KEY=your_google_gemini_api_key
 
-   # Install Python (3.12 or 3.13)
-   winget install --id Python.Python.3.12 -e --source winget
-
-   # Install uv (Fast package manager)
-   powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-   ```
-2. **Using Direct Installers**:
-   - Download Git from [git-scm.com/download/win](https://git-scm.com/download/win).
-   - Download Python from [python.org/downloads](https://www.python.org/downloads/).
-   - ⚠️ **Important**: During Python installation, make sure to check the box: **"Add python.exe to PATH"**.
-   - If compiling vector libraries from source, install the [C++ Build Tools](https://aka.ms/vs/17/release/vs_BuildTools.exe) with "Desktop development with C++" workload.
-
----
-
-#### 🍎 macOS
-
-1. **Install Homebrew** (if not already installed):
-   ```bash
-   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-   ```
-2. **Install Git, Python & uv via Homebrew**:
-   ```bash
-   brew update
-   brew install git python@3.12 uv
-   ```
-3. *(Alternative)*: Install Apple's Command Line Developer Tools:
-   ```bash
-   xcode-select --install
-   ```
-
----
-
-#### 🐧 Linux
-
-##### **Ubuntu / Debian / Linux Mint**:
-```bash
-sudo apt update && sudo apt upgrade -y
-sudo apt install -y git python3 python3-pip python3-venv python3-dev build-essential
-curl -LsSf https://astral.sh/uv/install.sh | sh
+# OpenAI API Key (Optional alternative)
+OPENAI_API_KEY=your_openai_api_key
 ```
 
-##### **Fedora / RHEL / CentOS**:
-```bash
-sudo dnf check-update
-sudo dnf install -y git python3 python3-pip python3-devel gcc gcc-c++
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
-
-##### **Arch Linux / Manjaro**:
-```bash
-sudo pacman -Syu --noconfirm git python python-pip base-devel
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
-
----
-
-### 2. Optional: Local Inference with Ollama (For Offline LLMs)
-If you wish to run open-weights models (such as `llama3.2`, `mistral`, `deepseek-r1`) offline and locally without paying for API keys:
-- **Windows**: Download from [ollama.com/download/windows](https://ollama.com/download/windows) or run `winget install Ollama.Ollama`.
-- **macOS**: `brew install ollama` or download from [ollama.com/download/mac](https://ollama.com/download/mac).
-- **Linux**: Run `curl -fsSL https://ollama.com/install.sh | sh`.
-
-After installing, pull a model:
-```bash
-ollama run llama3.2
-```
-
----
-
-## 📦 Required Python Packages
-
-All dependencies are defined in [`pyproject.toml`](./pyproject.toml) and [`requirements.txt`](./requirements.txt):
-
-| Category | Package | Version | Purpose |
-| :--- | :--- | :--- | :--- |
-| **Core Framework** | **`langchain`** | `^1.4.7` | High-level orchestration for LLM chains and prompts |
-| | **`langchain-core`** | `^1.0.0` | Fundamental abstractions, message schemas, and runnables |
-| | **`langchain-community`** | `^0.4.1` | Third-party integrations, document loaders, and tools |
-| **Model Drivers** | **`langchain-google-genai`**| `^4.2.2` | Google Gemini models (`gemini-2.5`, `gemini-3.8-flash`) |
-| | **`langchain-openai`** | `^1.4.7` | OpenAI (`gpt-4o`, `o3-mini`), OpenRouter, and Ollama |
-| | **`langchain-groq`** | `^1.1.3` | Ultra-low latency LPU inference with Groq |
-| **Vector DB & Embeddings** | **`chromadb`** | `^1.5.9` | High-performance embedded local vector database |
-| | **`langchain-chroma`** | `^1.1.0` | LangChain vector store integration for Chroma |
-| | **`sentence-transformers`** | `^6.2.0` | Fast open-source embeddings (e.g., `all-MiniLM-L6-v2`) |
-| | **`langchain-huggingface`** | `^1.2.2` | LangChain wrapper for Hugging Face embeddings |
-| | **`torchvision`** | `^0.27.0` | PyTorch backend for tensor computation |
-| **RAG & Document Tools** | **`langchain-text-splitters`**| `^1.1.2` | Text chunking (`RecursiveCharacterTextSplitter`) |
-| | **`pypdf`** | `^6.11.0` | PDF document extraction and page reading |
-| | **`fpdf2`** | `^2.8.7` | Programmatic PDF report generation |
-| | **`pandas`** | `^3.0.2` | Tabular data analysis and biomarker dataframes |
-| | **`pillow`** | `^12.2.0` | Image processing and visual asset handling |
-| **Interactive UI & Web** | **`streamlit`** | `^1.57.0` | Powers the reactive, glassmorphic web dashboard |
-| **Notebooks & Widgets** | **`notebook`** | `^7.5.6` | Modern web-based interactive computational notebooks |
-| | **`ipykernel`** | `^7.2.0` | Jupyter Python execution kernel |
-| | **`ipywidgets`** | `^8.1.9` | Rich notebook interactive widgets & download progress bars |
-| **Utilities** | **`python-dotenv`** | `^1.2.2` | Securely loads configuration and environment variables |
-| | **`requests`** | `^2.31.0` | HTTP requests and API model auto-detection |
-
----
-
-## 🛠️ Step-by-Step Setup & Virtual Environment
-
-### Step 1: Clone the Repository
-```bash
-git clone https://github.com/kirankumarhm/tutorial-agentic-ai.git
-cd tutorial-agentic-ai
-```
-
-### Step 2: Create and Activate a Virtual Environment
-
-#### On Windows (PowerShell):
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-```
-*(If you encounter an execution policy restriction in PowerShell, run `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser` once).*
-
-#### On Windows (Command Prompt `cmd`):
-```cmd
-python -m venv .venv
-.\.venv\Scripts\activate.bat
-```
-
-#### On macOS / Linux (Terminal):
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-```
-
----
-
-### Step 3: Install Packages
-
-#### Method A: Ultra-Fast Installation using `uv` (Recommended)
-If you have [uv](https://github.com/astral-sh/uv) installed:
-```bash
-# Sync all project dependencies directly from pyproject.toml:
-uv sync
-```
-
-#### Method B: Standard Installation via `pip`
-```bash
-pip install --upgrade pip
-pip install -r requirements.txt
-```
+> [!TIP]
+> All Spring Boot `application.yml` files are pre-configured with a **Dual-Endpoint Architecture**:
+> - **Option A (Default)**: Routes through Google Gemini's OpenAI-compatible endpoint (`https://generativelanguage.googleapis.com/v1beta/openai` using model `gemini-3.8-flash`) via `GOOGLE_API_KEY`.
+> - **Option B**: Easily switch to official OpenAI (`gpt-4o-mini`) simply by toggling comments in `application.yml`.
 
 ---
 
 ## 🚀 Running the Applications
 
-### 1. Launch the Streamlit Health Analyzer App
-Make sure your virtual environment is active:
+### 1. Launch the Streamlit Health Analyzer App (Python)
 ```bash
+uv sync   # or pip install -r requirements.txt
 streamlit run 2_health_analysis/streamlit_app/app.py
 ```
 Your browser will open automatically to `http://localhost:8501`.
 
-### 2. Launch the Jupyter Notebooks
-To explore the step-by-step tutorial notebooks:
+### 2. Launch the Jupyter Notebooks (Python)
 ```bash
 python -m notebook
 ```
-- Open `1_simple_calling_llm/call_llm.ipynb` to explore foundational LLM calling patterns.
-- Open `2_health_analysis/blood_work_analysis.ipynb` to explore clinical biomarker extraction.
-- Open `3_vector_db/chroma_vector_db_basics.ipynb` to explore vector database indexing and semantic search.
-- Open `4_rag_basics/basic_rag.ipynb` to explore document chunking, retrieval, and RAG pipelines.
+- Open `1_simple_calling_llm/call_llm.ipynb` — Foundational LLM calling patterns.
+- Open `2_health_analysis/blood_work_analysis.ipynb` — Clinical biomarker extraction & triage.
+- Open `3_vector_db/chroma_vector_db_basics.ipynb` — Vector embeddings & Chroma similarity search.
+- Open `4_rag_basics/basic_rag.ipynb` — End-to-end RAG pipeline over `telecom_guide.pdf`.
+- Open `5_single_agent/single_agent.ipynb` — Autonomous ReAct agent with dynamic tool routing.
+- Open `6_memory/single_agent_with_memory.ipynb` — Conversational memory with `InMemorySaver` & session threads.
+- Open `7_multi_model_agent/multi_model_agent.ipynb` — Multimodal vision agent analyzing `blood_work.png`.
+
+---
+
+### 3. Launch the Spring Edition (Spring Boot 3.4 & Spring AI on Java 21)
+
+Every module contains an enterprise Spring Boot 3.4 application equipped with both a **CLI Console Runner** and an **interactive REST Controller**:
+
+#### Build All 7 Spring Modules from Root:
+```powershell
+mvn clean compile
+```
+
+#### Run Individual Spring Modules:
+
+* **Module 1: Simple LLM Calling** (Port `8081`)
+  ```powershell
+  cd 1_simple_calling_llm/spring
+  mvn spring-boot:run
+  ```
+
+* **Module 2: Clinical Health Analysis** (Port `8082`)
+  ```powershell
+  cd 2_health_analysis/spring
+  mvn spring-boot:run
+  ```
+
+* **Module 3: Vector DB & Semantic Search** (Port `8083`)
+  ```powershell
+  cd 3_vector_db/spring
+  mvn spring-boot:run
+  ```
+
+* **Module 4: RAG Pipeline with PDF** (Port `8084`)
+  ```powershell
+  cd 4_rag_basics/spring
+  mvn spring-boot:run
+  ```
+
+* **Module 5: Single Agent & Tool Calling** (Port `8085`)
+  ```powershell
+  cd 5_single_agent/spring
+  mvn spring-boot:run
+  ```
+
+* **Module 6: Conversational Memory Agent** (Port `8086`)
+  ```powershell
+  cd 6_memory/spring
+  mvn spring-boot:run
+  ```
+
+* **Module 7: Multimodal Vision Agent** (Port `8087`)
+  ```powershell
+  cd 7_multi_model_agent/spring
+  mvn spring-boot:run
+  ```
+
+---
+
+## 🧪 Complete REST API Testing with cURL (Modules 1 to 7)
+
+Use the following copy-pasteable `curl` commands to test each Spring Boot service:
+
+### 🔹 Module 1: Simple LLM Calling (Port 8081)
+```bash
+# 1. Basic Prompt Invocation
+curl -X GET "http://localhost:8081/api/llm/ask?query=Why+do+parrots+talk"
+
+# 2. Temperature Tuning (Deterministic 0.0 vs Creative 1.0)
+curl -X GET "http://localhost:8081/api/llm/tagline?temperature=0.0"
+curl -X GET "http://localhost:8081/api/llm/tagline?temperature=1.0"
+
+# 3. Role-Based Prompting (Concise Answer)
+curl -X GET "http://localhost:8081/api/llm/short-answer?question=How+many+moons+does+Jupiter+have"
+```
+
+---
+
+### 🔹 Module 2: Clinical Health Analysis (Port 8082)
+```bash
+# 1. Analyze Bundled Sample Lab Report (blood_work.txt)
+curl -X GET "http://localhost:8082/api/health/analyze-sample"
+
+# 2. Analyze Custom Clinical Lab Report
+curl -X POST "http://localhost:8082/api/health/analyze" \
+  -H "Content-Type: text/plain" \
+  -d "Patient: John Doe, 45, Male. Fasting Blood Glucose: 165 mg/dL (Normal: 70-99). HbA1c: 7.8% (Normal: <5.7%). Total Cholesterol: 245 mg/dL."
+```
+
+---
+
+### 🔹 Module 3: Vector DB & Semantic Search (Port 8083)
+```bash
+# 1. Initialize In-Memory Vector Store with Sample Articles
+curl -X POST "http://localhost:8083/api/vector/init"
+
+# 2. Semantic Search for Executive & Business Queries (Top-2 Nearest Neighbors)
+curl -X GET "http://localhost:8083/api/vector/search?query=Elon+Musk&topK=2"
+
+# 3. Semantic Search on Financial Data
+curl -X GET "http://localhost:8083/api/vector/search?query=record+quarterly+earnings+and+profits&topK=1"
+```
+
+---
+
+### 🔹 Module 4: RAG Pipeline with PDF (Port 8084)
+```bash
+# 1. Inquire about International Roaming Policies from telecom_guide.pdf
+curl -X GET "http://localhost:8084/api/rag/ask?question=How+does+international+roaming+work+and+what+charges+should+I+expect"
+
+# 2. Inquire about Technical Architecture (VoLTE vs Circuit Switched)
+curl -X GET "http://localhost:8084/api/rag/ask?question=What+is+the+difference+between+VoLTE+and+legacy+circuit+switched+calling"
+```
+
+---
+
+### 🔹 Module 5: Single Agent & Tool Calling (Port 8085)
+```bash
+# 1. Single Tool Dispatch (Product Catalog Lookup)
+curl -X GET "http://localhost:8085/api/agent/ask?question=what+is+the+price+of+wireless+headphones"
+
+# 2. Single Tool Dispatch (Customer Sentiment & Reviews Lookup)
+curl -X GET "http://localhost:8085/api/agent/ask?question=how+do+people+like+smart+watch"
+
+# 3. Multi-Hop Tool Dispatch (Executes both getProduct and getReview in one turn)
+curl -X GET "http://localhost:8085/api/agent/ask?question=what+is+the+price+and+reviews+of+smart+watch"
+
+# 4. Inspect Available Product Catalog & Review Data
+curl -X GET "http://localhost:8085/api/agent/catalog"
+```
+
+---
+
+### 🔹 Module 6: Conversational Agent with Memory (Port 8086)
+```bash
+# 1. Turn 1: Inquire about a specific product in a conversation session
+curl -X GET "http://localhost:8086/api/memory/chat?conversationId=user-alice-session-1&message=what+is+the+price+of+wireless+headphones"
+
+# 2. Turn 2: Follow-up using pronoun ("this product") — resolved via ChatMemory!
+curl -X GET "http://localhost:8086/api/memory/chat?conversationId=user-alice-session-1&message=what+are+the+reviews+on+this+product"
+
+# 3. View In-Memory Product Catalog
+curl -X GET "http://localhost:8086/api/memory/catalog"
+
+# 4. Clear Session Memory for a given conversation
+curl -X POST "http://localhost:8086/api/memory/clear?conversationId=user-alice-session-1"
+```
+
+---
+
+### 🔹 Module 7: Multimodal Vision Agent (Port 8087)
+```bash
+# 1. Analyze Bundled Medical Report Image (blood_work.png) + Automatic Tool Calling
+curl -X GET "http://localhost:8087/api/multimodal/analyze-sample"
+
+# 2. Analyze Custom Uploaded Image via Multipart Form Upload
+curl -X POST "http://localhost:8087/api/multimodal/analyze" \
+  -F "file=@D:/Workspaces/tutorial-agentic-ai/7_multi_model_agent/blood_work.png" \
+  -F "prompt=Analyse this blood work report and suggest a diet plan."
+
+# 3. Retrieve All Available Clinical Diet Plans
+curl -X GET "http://localhost:8087/api/multimodal/diets"
+```
 
 ---
 
 ## 🌟 Modules Overview
 
 ### 1️⃣ `1_simple_calling_llm/`
-Demonstrates foundational patterns for initializing and calling Large Language Models through standard LangChain interfaces, parameter tuning (`temperature`, `streaming`), and multi-provider connectivity.
+Demonstrates foundational patterns for initializing and calling Large Language Models through standard LangChain and Spring AI interfaces, parameter tuning (`temperature`), and multi-provider connectivity.
 
 ### 2️⃣ `2_health_analysis/`
 An end-to-end clinical biomarker analysis and tailored functional nutrition engine.
-
-<p align="center">
-  <img src="2_health_analysis/streamlit_app/AI%20Blood%20Work%20%26%20Diet%20Analyzer.png" alt="AI Blood Work & Diet Analyzer" width="900" style="border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.3);" />
-</p>
-
-#### **Key Features of the Streamlit App (`streamlit_app/app.py`)**:
-* **⚡ Model & Provider-Agnostic**:
-  - **Google Gemini**: `gemini-3.8-flash`, `gemini-3.8-pro`, `gemini-2.5-flash`, `gemma-4-31b-it`
-  - **OpenAI**: `gpt-4o`, `gpt-4o-mini`, `o3-mini`, `o1-mini`
-  - **Groq**: Ultra-fast LPU inference with `llama-3.3-70b-versatile`, `mixtral-8x7b-32768`
-  - **OpenRouter**: Access to 200+ multi-provider models (Claude 3.5, DeepSeek, etc.)
-  - **Ollama (Local)**: Private, offline open-source models (`llama3.2`, `deepseek-r1`, `mistral`)
-  - **Custom OpenAI-Compatible**: Connect to vLLM, LM Studio, or Together AI
-* **🔒 Privacy & In-Memory Key Security**:
-  - Does **not** read or expose keys from `.env`.
-  - Keys are entered directly in the UI per session and kept strictly in memory.
-  - Strict pre-execution validation prevents unauthenticated API calls.
-* **🔬 Automated Biomarker Triage**:
-  - Classifies test results as `HIGH`, `LOW`, or `NORMAL` against standard clinical reference ranges.
-  - Formatted table with glowing neon status pills and metric summary cards.
-* **🥗 Tailored Indian Dietary Strategies**:
-  - Side-by-side comparison of **Foods to Prioritize** (e.g. methi seeds, whole millets, sprouted moong, amla) vs **Foods to Restrict** (vanaspati, refined flours, deep-fried farsan).
-  - Customizable by dietary preference (*Vegetarian*, *Eggetarian*, *Non-Vegetarian*).
-* **🩺 Physician Checklist**:
-  - Generates targeted questions for patients to discuss with their primary care doctor.
-* **🎨 Glassmorphic Interface**:
-  - Deep obsidian dark canvas with ambient aurora glow, frosted translucent glass containers (`backdrop-filter: blur(20px)`), and responsive layout.
+- **Biomarker Triage**: Classifies test results as `HIGH`, `LOW`, or `NORMAL`.
+- **Targeted Nutrition**: Tailored Indian dietary recommendations (Foods to Prioritize vs Restrict).
+- **Streamlit Web Application**: Modern obsidian glassmorphic interface on port 8501.
 
 ### 3️⃣ `3_vector_db/`
-Explores semantic search, embeddings, and vector store operations using **ChromaDB**:
-- Creating dense vector representations with `sentence-transformers` (`all-MiniLM-L6-v2`) and HuggingFace.
-- Indexing document embeddings into in-memory and persistent Chroma vector collections.
-- Executing similarity search queries (`k-nearest neighbors`) with distance metrics.
+Explores vector database indexing and similarity search using **ChromaDB** (Python) and Spring AI's `VectorStore`:
+- Dense semantic vector embeddings.
+- In-memory collection indexing.
+- K-nearest neighbors similarity retrieval.
 
 ### 4️⃣ `4_rag_basics/`
 Hands-on implementation of **Retrieval-Augmented Generation (RAG)**:
-- Loading unstructured documents (PDFs using `pypdf`).
-- Chunking strategies using `RecursiveCharacterTextSplitter` with customizable `chunk_size` and `chunk_overlap`.
-- Integrating document retrievers with LangChain prompt templates and LLMs to answer domain-specific questions grounded in source data.
+- PDF document ingestion with `PyPDFLoader` / `PagePdfDocumentReader`.
+- Granular text chunking (`RecursiveCharacterTextSplitter` / `TokenTextSplitter`).
+- Grounded contextual prompt synthesis.
 
----
+### 5️⃣ `5_single_agent/`
+Autonomous **ReAct (Reasoning + Action) Agent Pattern**:
+- Converts business functions into schema-backed tools using `@tool` (Python) and `@Tool` (Spring AI).
+- Autonomous tool selection: decides whether to invoke `getProduct`, `getReview`, or both.
+- Multi-hop reasoning across heterogeneous data sources.
 
-## 🧪 Testing with Sample Blood Work
-1. Launch the app in your browser (`http://localhost:8501`).
-2. In the sidebar, select your preferred provider (e.g. **Google Gemini**, **OpenAI**, or **Groq**) and paste your API key.
-3. Click **"📋 Load Sample Blood Report"** to load the provided clinical lab test panel.
-4. Click **"🚀 Analyze Biomarkers"** to view the interactive triage and diet strategy.
+### 6️⃣ `6_memory/`
+**Stateful Conversational Agents with Memory Checkpointing**:
+- Maintains persistent context across user turns using `InMemorySaver` (LangGraph) and `MessageChatMemoryAdvisor` (Spring AI).
+- Session partitioning via `thread_id` / `conversationId`.
+- Seamless coreference resolution (understanding pronouns like *"this product"* or *"it"* without restating facts).
+
+### 7️⃣ `7_multi_model_agent/`
+**Multimodal Vision Agent with Dynamic Tool Execution**:
+- Direct visual ingestion of medical report images (`blood_work.png`).
+- Automated visual OCR and abnormal biomarker identification (Lipid Panel: Total Cholesterol 238, LDL 162).
+- Autonomous condition triage (`high_cholesterol`).
+- Dynamic tool dispatch to clinical nutrition engines (`getDietRecommendation`).
 
 ---
 

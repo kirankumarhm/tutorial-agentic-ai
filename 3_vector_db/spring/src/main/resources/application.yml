@@ -1,0 +1,22 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: vector-db-spring
+  ai:
+    openai:
+      # ==============================================================
+      # OPTION A: Official OpenAI (For text-embedding-3-small)
+      # ==============================================================
+      api-key: ${AI_API_KEY:${OPENAI_API_KEY:${GOOGLE_API_KEY:demo-key}}}
+      base-url: ${AI_BASE_URL:${OPENAI_BASE_URL:https://api.openai.com}}
+      embedding:
+        options:
+          model: ${OPENAI_EMBEDDING_MODEL:text-embedding-3-small}
+
+      # ==============================================================
+      # OPTION B: Google Gemini Endpoint (Chat Completions)
+      # Note: Gemini's OpenAI gateway only serves chat completions
+      # ==============================================================
+      # base-url: https://generativelanguage.googleapis.com/v1beta/openai
